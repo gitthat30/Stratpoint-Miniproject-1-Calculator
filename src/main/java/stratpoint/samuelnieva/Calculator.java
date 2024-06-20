@@ -28,79 +28,93 @@ public class Calculator {
         char[] chars = e.toCharArray();
         boolean calc = false;
 
-        for (int i = 0;i < chars.length;i++) {
-            boolean numFlag = Character.getNumericValue(chars[i]) != -1;
-            boolean symFlag1 = chars[i] == '+' || chars[i] == '-';
-            boolean symFlag2 = chars[i] == '*' || chars[i] == '/';
+        try {
+            for (int i = 0;i < chars.length;i++) {
+                boolean numFlag = Character.getNumericValue(chars[i]) != -1;
+                boolean symFlag1 = chars[i] == '+' || chars[i] == '-';
+                boolean symFlag2 = chars[i] == '*' || chars[i] == '/';
 
-            if(calc) {
-                //If calc is true, guaranteed it's a number
-                Double temp = nums.pop();
-                Double temp2;
+                if(calc) {
+                    //If calc is true, guaranteed it's a number
+                    Double temp = nums.pop();
+                    Double temp2;
 
-                if(i != chars.length - 1 && Character.getNumericValue(chars[i+1]) != -1) {
-                    System.out.println("Here?");
-                    String temp3 = "" + chars[i];
-                    while(Character.getNumericValue(chars[i+1]) != -1) {
-                        i++;
-                        temp3 += chars[i];
-                    }
-
-                    temp2 = Double.parseDouble(temp3);
-                }
-                else {
-                    temp2 = (double) Character.getNumericValue(chars[i]);
-                }
-
-                Character op = symbols.pop();
-
-                if(op == '*') {
-                    nums.push(this.mulNum(temp, temp2));
-                }
-                else {
-                    nums.push(this.divNum(temp, temp2));
-                }
-
-                calc = false;
-            }
-            else {
-                if(numFlag) {
-                    if(i != chars.length - 1 && Character.getNumericValue(chars[i+1]) != -1) {
-                        String temp = "" + chars[i];
-                        while(Character.getNumericValue(chars[i+1]) != -1) {
+                    if(i != chars.length - 1 && (chars[i+1] == '.' || Character.getNumericValue(chars[i+1]) != -1)) {
+                        String temp3 = "" + chars[i];
+                        while(i != chars.length - 1 && (chars[i+1] == '.' || Character.getNumericValue(chars[i+1]) != -1)) {
                             i++;
-                            temp += chars[i];
+                            if(chars[i] == '.' && temp3.contains("."))
+                                throw new Exception("Invalid input string");
+                            temp3 += chars[i];
                         }
 
-                        nums.push(Double.parseDouble(temp));
+
+
+                        temp2 = Double.parseDouble(temp3);
                     }
-                    else
-                        nums.push((double) Character.getNumericValue(chars[i]));
-                }
+                    else {
+                        temp2 = (double) Character.getNumericValue(chars[i]);
+                    }
 
-                else if(symFlag1 || symFlag2) {
-                    symbols.push(chars[i]);
-                }
+                    Character op = symbols.pop();
 
-                if(symFlag2)
-                    calc = true;
+                    if(op == '*') {
+                        nums.push(this.mulNum(temp, temp2));
+                    }
+                    else {
+                        nums.push(this.divNum(temp, temp2));
+                    }
+
+                    calc = false;
+                }
+                else {
+                    if(numFlag) {
+                        if(i != chars.length - 1  && ((Character.getNumericValue(chars[i+1]) != -1) || chars[i+1] == '.')) {
+                            String temp = "" + chars[i];
+
+                            while(i != chars.length - 1 && ((Character.getNumericValue(chars[i+1]) != -1) || chars[i+1] == '.')) {
+                                i++;
+                                if(chars[i] == '.' && temp.contains("."))
+                                    throw new Exception("Invalid input string");
+
+                                temp += chars[i];
+                            }
+
+                            nums.push(Double.parseDouble(temp));
+                        }
+                        else
+                            nums.push((double) Character.getNumericValue(chars[i]));
+                    }
+
+                    else if(symFlag1 || symFlag2) {
+                        symbols.push(chars[i]);
+                    }
+
+                    if(symFlag2)
+                        calc = true;
+                }
+            }
+
+            //Last pass
+            total = nums.pop();
+
+            //Operations done from right to left (Stack)
+            while(!nums.isEmpty() && !symbols.isEmpty()) {
+                switch(symbols.pop()) {
+                    case '+':
+                        total = this.addNum(total, nums.pop());
+                        break;
+                    case '-':
+                        total = this.subNum(nums.pop(), total);
+                        break;
+                }
             }
         }
-
-        //Last pass
-        total = nums.pop();
-
-        //Operations done from right to left (Stack)
-        while(nums.size() > 0 && symbols.size() > 0) {
-            switch(symbols.pop()) {
-                case '+':
-                    total = this.addNum(total, nums.pop());
-                    break;
-                case '-':
-                    total = this.subNum(nums.pop(), total);
-                    break;
-            }
+        catch(Exception ex) {
+            System.out.println("Invalid input");
         }
+
+
 
         return total;
     }
