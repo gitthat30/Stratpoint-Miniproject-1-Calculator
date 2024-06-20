@@ -78,7 +78,7 @@ public class Main {
             }
             else {
 
-                System.out.println("\nPlease enter your expression (No spaces and parentheses!):");
+                System.out.println("\nPlease enter your expression (No spaces!):");
                 String expression = sc.next();
                 Double total = calc.calculateString(expression);
 

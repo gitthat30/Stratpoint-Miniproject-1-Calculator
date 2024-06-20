@@ -25,8 +25,14 @@ public class Calculator {
 
         Stack<Double> nums = new Stack<>();
         Stack<Character> symbols = new Stack<>();
+        //If parenthesis
+        boolean parFlag = false;
+        Stack<Character> par = new Stack<>();
+        String parString = new String("");
+
         char[] chars = e.toCharArray();
         boolean calc = false;
+
 
         try {
             for (int i = 0;i < chars.length;i++) {
@@ -34,7 +40,40 @@ public class Calculator {
                 boolean symFlag1 = chars[i] == '+' || chars[i] == '-';
                 boolean symFlag2 = chars[i] == '*' || chars[i] == '/';
 
-                if(calc) {
+                if(chars[i] == '(')
+                    parFlag = true;
+
+                if(parFlag) {
+                    if(chars[i] == '(')
+                        par.push(chars[i]);
+                    else if(chars[i] == ')')
+                        par.pop();
+
+                    parString += chars[i];
+
+
+
+                    if(par.isEmpty()) {
+                        parFlag = false;
+                        parString = parString.substring(1, parString.length()-1);
+
+                        if(calc) {
+                            char op = symbols.pop();
+                            double temp = nums.pop();
+                            double temp2 = this.calculateString(parString);
+
+                            if(op == '*') {
+                                nums.push(this.mulNum(temp, temp2));
+                            }
+                            else {
+                                nums.push(this.divNum(temp, temp2));
+                            }
+                        }
+                        else
+                            nums.push(this.calculateString(parString));
+                    }
+                }
+                else if(calc) {
                     //If calc is true, guaranteed it's a number
                     Double temp = nums.pop();
                     Double temp2;
