@@ -15,14 +15,19 @@ public class Main {
         System.out.println("Select mode:");
         System.out.println("1 - Simple");
         System.out.println("2 - Expression");
-        System.out.print("Choice: ");
+
 
         while(m != 1 && m != 2) {
+            System.out.print("Choice: ");
             try {
                 m = sc.nextInt();
+                if(m != 1 && m!=2)
+                    System.out.println("\nInvalid input: Please select one of the choices\n");
             }
             catch(Exception e) {
+                System.out.println("\nInvalid input: Please select one of the choices\n");
                 sc.next();
+
             }
         }
 
@@ -73,10 +78,15 @@ public class Main {
             }
             else {
 
-                System.out.println("Please enter your expression (No spaces and parentheses!):");
+                System.out.println("\nPlease enter your expression (No spaces and parentheses!):");
                 String expression = sc.next();
+                Double total = calc.calculateString(expression);
 
-                System.out.println("\nTotal = " + calc.calculateString(expression) + "\n");
+                if(!Double.isInfinite(total))
+                    System.out.println("\nTotal = " + total);
+                else {
+                    System.out.println("\nInvalid Input: Divided by Zero");
+                }
 
             }
 

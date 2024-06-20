@@ -43,12 +43,12 @@ public class Calculator {
                         String temp3 = "" + chars[i];
                         while(i != chars.length - 1 && (chars[i+1] == '.' || Character.getNumericValue(chars[i+1]) != -1)) {
                             i++;
+
                             if(chars[i] == '.' && temp3.contains("."))
-                                throw new Exception("Invalid input string");
+                                throw new Exception("Invalid input: Multiple decimal points found");
+
                             temp3 += chars[i];
                         }
-
-
 
                         temp2 = Double.parseDouble(temp3);
                     }
@@ -75,7 +75,7 @@ public class Calculator {
                             while(i != chars.length - 1 && ((Character.getNumericValue(chars[i+1]) != -1) || chars[i+1] == '.')) {
                                 i++;
                                 if(chars[i] == '.' && temp.contains("."))
-                                    throw new Exception("Invalid input string");
+                                    throw new Exception("Invalid input: Multiple decimal points found");
 
                                 temp += chars[i];
                             }
@@ -111,7 +111,8 @@ public class Calculator {
             }
         }
         catch(Exception ex) {
-            System.out.println("Invalid input");
+            System.out.println();
+            System.out.println(ex.getMessage());
         }
 
 
